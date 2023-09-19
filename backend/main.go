@@ -8,6 +8,9 @@ import (
 )
 
 func main() {
+
+	gin.SetMode(gin.ReleaseMode)
+
 	r := gin.Default()
 
 	r.Use(cors.Default())
@@ -26,5 +29,5 @@ func main() {
 		})
 	})
 
-	r.Run("localhost:8000")
+	r.Run(":8000")
 }
