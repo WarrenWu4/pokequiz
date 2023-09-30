@@ -4,12 +4,17 @@ import ReactDOM from 'react-dom/client'
 import './index.css'
 import Start from './pages/Start.tsx';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
+import About from './pages/About.tsx';
 
 const router = createBrowserRouter([
   {
       path: "/",
       element: <Start/>
   },
+  {
+      path: "/about",
+      element: <About/>
+  }
 ]);
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
