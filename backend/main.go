@@ -22,6 +22,12 @@ func main() {
 		})
 	})
 
+	r.GET("/jonz64", func(c *gin.Context) {
+		c.JSON(http.StatusOK, gin.H{
+			"uhhhhhhhhhhhhhhh": "idk what to put here so......... ",
+		})
+	})
+
 	// test route
 	r.GET("/test", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
