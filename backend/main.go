@@ -153,6 +153,11 @@ func main() {
 	r.POST("/developers", postDevelopers)
 	r.DELETE("/developers", deleteDevelopers)
 
+	// auth, err := authenticator.New()
+	// if err != nil {
+	// 	log.Fatalf("Failed", err)
+	// }
+
 	r.Run(":8000")
 
 }
