@@ -5,6 +5,7 @@ import './index.css'
 import Start from './pages/Start.tsx';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import About from './pages/About.tsx';
+import About from './pages/About.tsx';
 
 const router = createBrowserRouter([
   {

@@ -13,7 +13,7 @@ const Start = () => {
         const getData = async() => {
             if (subscribed) {
                 console.log("fetching data in Start.tsx ...")
-                const response = await fetch(url+"/test");
+                const response = await fetch(url+"/");
                 const json = await response.json();
                 setData(json.data);
             }
