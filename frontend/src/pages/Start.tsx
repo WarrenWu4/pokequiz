@@ -51,7 +51,7 @@ const Start = () => {
                     >
                         <input
                             placeholder="Game PIN"
-                            className="px-2 py-1 text-center bg-white rounded-md border placeholder-gray placeholder-opacity-50 select-none"
+                            className="px-2 py-1 text-center bg-white rounded-md border placeholder-gray placeholder-opacity-50 select-none text-gray-700"
                             type="text"
                             value={pin}
                             onChange={handleInput}
