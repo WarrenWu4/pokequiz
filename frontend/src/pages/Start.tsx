@@ -41,7 +41,7 @@ const Start = () => {
             <Navbar/>
             <div className="w-full h-full flex items-center justify-center flex-col p-4">
                 
-                <form onSubmit={handleForm} method="POST" action={url+"/validate"} className="max-w-[320px] max-h-[400px] bg-gray-800 rounded-lg flex items-center justify-center flex-col p-4">
+                <form onSubmit={handleForm} method="POST" action={url+"/game"} className="max-w-[320px] max-h-[400px] bg-gray-800 rounded-lg flex items-center justify-center flex-col p-4">
                     <label className="mb-2">Enter Game Pin:</label>
                     <input className="bg-transparent px-2 py-1 text-center" type="text" value={pin} onChange={handleInput}/>
                 </form>
