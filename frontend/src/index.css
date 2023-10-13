@@ -1,7 +1,10 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@import url("https://fonts.googleapis.com/css2?family=Kanit&display=swap");
 
 body {
-    @apply w-screen min-h-screen overflow-x-hidden bg-black text-white
+    font-family: "Kanit", sans-serif;
+
+    @apply w-screen min-h-screen overflow-x-hidden bg-black text-white;
 }
