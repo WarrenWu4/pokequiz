@@ -1,65 +1,57 @@
 package main
 
-import (
-	"context"
-	"errors"
-	"os"
+func setupAuth(providers map[string][]string) () {
 
-	"github.com/coreos/go-oidc"
-	"github.com/gin-contrib/sessions"
-	"github.com/gin-contrib/sessions/cookie"
-	"github.com/gin-gonic/gin"
-	"golang.org/x/oauth2"
-)
-
-type Authenticator struct {
-	*oidc.Provider
-	oauth2.Config
 }
 
-// New instantiates the *Authenticator.
-func New() (*Authenticator, error) {
-	provider, err := oidc.NewProvider(
-		context.Background(),
-		"https://"+os.Getenv("AUTH0_DOMAIN")+"/",
-	)
+// type Authenticator struct {
+// 	*oidc.Provider
+// 	oauth2.Config
+// }
 
-	if err != nil {
-		return nil, err
-	}
+// // New instantiates the *Authenticator.
+// func New() (*Authenticator, error) {
+// 	provider, err := oidc.NewProvider(
+// 		context.Background(),
+// 		"https://"+os.Getenv("AUTH0_DOMAIN")+"/",
+// 	)
 
-	oauth2Config := oauth2.Config{
-		ClientID:     os.Getenv("AUTH0_CLIENT_ID"),
-		ClientSecret: os.Getenv("AUTH0_CLIENT_SECRET"),
-		RedirectURL:  os.Getenv("AUTH0_CALLBACK_URL"),
-	}
+// 	if err != nil {
+// 		return nil, err
+// 	}
 
-	return &Authenticator{
-		Provider: provider,
-		Config:   oauth2Config,
-	}, nil
-}
+// 	oauth2Config := oauth2.Config{
+// 		ClientID:     os.Getenv("AUTH0_CLIENT_ID"),
+// 		ClientSecret: os.Getenv("AUTH0_CLIENT_SECRET"),
+// 		RedirectURL:  os.Getenv("AUTH0_CALLBACK_URL"),
+// 	}
 
-func (a *Authenticator) VerifyIDToken(ctx context.Context, token *oauth2.Token) (*oidc.IDToken, error) {
-	rawIDToken, ok := token.Extra("id_token").(string)
-	if !ok {
-		return nil, errors.New("no id_token field in oauth2 token")
-	}
+// 	return &Authenticator{
+// 		Provider: provider,
+// 		Config:   oauth2Config,
+// 	}, nil
+// }
 
-	oidcConfig := &oidc.Config{
-		ClientID: a.ClientID,
-	}
+// func (a *Authenticator) VerifyIDToken(ctx context.Context, token *oauth2.Token) (*oidc.IDToken, error) {
+// 	rawIDToken, ok := token.Extra("id_token").(string)
+// 	if !ok {
+// 		return nil, errors.New("no id_token field in oauth2 token")
+// 	}
 
-	return a.Verifier(oidcConfig).Verify(ctx, rawIDToken)
-}
+// 	oidcConfig := &oidc.Config{
+// 		ClientID: a.ClientID,
+// 	}
 
-func login() {
-	router := gin.Default()
+// 	return a.Verifier(oidcConfig).Verify(ctx, rawIDToken)
+// }
 
-	store := cookie.NewStore([]byte(os.Getenv("AUTH0_CLIENT_SECRET")))
-	router.Use(sessions.Sessions("auth-session", store))
+// func login() {
+// 	router := gin.Default()
 
-	router.GET("/login", func(ctx *gin.Context) {
+// 	store := cookie.NewStore([]byte(os.Getenv("AUTH0_CLIENT_SECRET")))
+// 	router.Use(sessions.Sessions("auth-session", store))
 
-	})
-}
+// 	router.GET("/login", func(ctx *gin.Context) {
+
+// 	})
+// }
