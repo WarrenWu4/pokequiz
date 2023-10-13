@@ -124,12 +124,11 @@ func deleteDevelopers(c *gin.Context) {
 	c.JSON(http.StatusOK, res)
 }
 
-type Pin struct {
-	Pin string `json:"pin"`
-}
-
 func validate(c *gin.Context) {
-	c.Redirect(http.StatusMovedPermanently, "https://www.youtube.com/watch?v=dQw4w9WgXcQ")
+	pin := c.PostForm("pin")
+	new_url := os.Getenv("FRONTEND_URL") + "/game/" + pin
+	fmt.Println(new_url)
+	c.Redirect(http.StatusMovedPermanently, new_url)
 }
 
 func main() {

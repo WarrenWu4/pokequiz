@@ -43,7 +43,7 @@ const Start = () => {
                 
                 <form onSubmit={handleForm} method="POST" action={url+"/validate"} className="max-w-[320px] max-h-[400px] bg-gray-800 rounded-lg flex items-center justify-center flex-col p-4">
                     <label className="mb-2">Enter Game Pin:</label>
-                    <input className="bg-transparent px-2 py-1 text-center" type="text" value={pin} onChange={handleInput}/>
+                    <input className="bg-transparent px-2 py-1 text-center" type="text" name="pin" value={pin} onChange={handleInput}/>
                 </form>
             </div>
         </div>
