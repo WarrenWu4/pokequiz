@@ -124,6 +124,14 @@ func deleteDevelopers(c *gin.Context) {
 	c.JSON(http.StatusOK, res)
 }
 
+type Pin struct {
+	Pin string `json:"pin"`
+}
+
+func validate(c *gin.Context) {
+	c.Redirect(http.StatusMovedPermanently, "https://www.youtube.com/watch?v=dQw4w9WgXcQ")
+}
+
 func main() {
 
 	fmt.Println("Starting server...")
@@ -152,6 +160,9 @@ func main() {
 	// ! POST and DELETE routes not tested yet
 	r.POST("/developers", postDevelopers)
 	r.DELETE("/developers", deleteDevelopers)
+
+	// route pin
+	r.POST("/validate", validate)
 
 	r.Run(":8000")
 
