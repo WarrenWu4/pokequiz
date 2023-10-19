@@ -22,6 +22,14 @@ func main() {
 		})
 	})
 
+	r.GET("/prasis", func(c *gin.Context) {
+		c.JSON(http.StatusOK, gin.H {
+			"name": "Prasitta Seenuvasan",
+			"height": "5'2",
+			"favorite-ice-cream": "mint chocolate chip :D",
+		})
+	})
+
 	// test route
 	r.GET("/test", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{

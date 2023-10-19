@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom/client'
 
 import './index.css'
 import Start from './pages/Start.tsx';
+import About from './pages/About.tsx';
+
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 
 const router = createBrowserRouter([
@@ -10,6 +12,10 @@ const router = createBrowserRouter([
       path: "/",
       element: <Start/>
   },
+  {
+    path: "/about",
+    element: <About/>
+  }
 ]);
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
