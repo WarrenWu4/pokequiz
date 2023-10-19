@@ -14,7 +14,12 @@ const router = createBrowserRouter([
   {
       path: "/about",
       element: <About/>
+  },
+  {
+      path: "/game/:pin",
+      element: <Game/>
   }
+
 ]);
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
