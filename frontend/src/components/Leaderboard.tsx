@@ -2,7 +2,8 @@ import { MdBookmarks, MdSettings } from "react-icons/md"
 
 const Leaderboard = () => {
 
-    // get profile data
+    // right now it's returning placeholder code taken from navbar.tsx
+    // change it however you like
 
     return (
         <div className="w-full flex justify-end items-center p-12 gap-x-4 [&>*]:cursor-pointer">
