@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react"
 import url from "../main";
 import Loading from "../components/Loading";
+import Actions from "../components/Actions";
+import Leaderboard from "../components/Leaderboard";
 
 interface Developer {
     name: string;
@@ -37,19 +39,16 @@ const Game = () => {
     }, [])
 
     return (
-        <div className="w-full h-full p-4 text-white">
+        <div className="w-full h-screen p-0 text-white">
             {loaded ?
-                <div className="w-full h-full flex p-12 gap-x-12">
-                    {data.map((dev:Developer) => {
-                        return (
-                            <div key={dev.name}>
-                                <h1>{dev.name}</h1>
-                                <h2>{dev.year}</h2>
-                                <h2>{dev.major}</h2>
-                                <p>{dev.about}</p>
-                            </div>
-                        )
-                    })}
+                
+                <div className="w-full h-full p-0">
+                    <div className="w-full h-11/20 bg-[url('../../public/fight-background-placeholder.png')] bg-cover">
+                        <Leaderboard/>
+                        <h1>test</h1>
+                        <h1>test</h1>
+                    </div>
+                    <Actions/>
                 </div>
                 :
                 <Loading/>
