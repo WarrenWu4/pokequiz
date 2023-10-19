@@ -1,12 +1,3 @@
-<<<<<<< HEAD
-import { useEffect, useState } from "react";
-import url from "../main";
-
-const About = () => {
-    const [loaded, setLoaded] = useState<boolean>(false)
-    const [data, setData] = useState<string>("")
-    useEffect(() => {
-=======
 import { useEffect, useState } from "react"
 import url from "../main";
 import Loading from "../components/Loading";
@@ -25,30 +16,11 @@ const About = () => {
 
     useEffect(() => {
 
->>>>>>> d91a3ce49d9b001f1ed849009f4a7e26e3aaf767
         let subscribed = true;
 
         const getData = async() => {
             if (subscribed) {
                 console.log("fetching data in About.tsx ...")
-<<<<<<< HEAD
-                const response = await fetch(url+"/benjaminkumar");
-                const json = await response.json();
-                setData(JSON.stringify(json));
-                setLoaded(true)
-            }
-        }
-        
-        getData();
-        console.log(data)
-        return () => {
-            subscribed = false;
-        }
-    }, [])
-    return(
-        <div className="text-white">
-            {loaded ? <div>{data}</div> : <div>Loading...</div>}
-=======
                 const response = await fetch(url+"/developers");
                 const json = await response.json();
                 setData(json)
@@ -82,7 +54,6 @@ const About = () => {
                 :
                 <Loading/>
             }
->>>>>>> d91a3ce49d9b001f1ed849009f4a7e26e3aaf767
         </div>
     )
 }

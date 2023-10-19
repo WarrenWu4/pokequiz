@@ -146,27 +146,12 @@ func main() {
 			"data": "hungrymonkey",
 		})
 	})
-<<<<<<< HEAD
-	r.GET("/benjaminkumar", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{
-			"name":               "Benjamin Kumar",
-			"favorite-ice-cream": "Mint chocolate chip",
-		})
-	})
-	// test route
-	r.GET("/test", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{
-			"data": "testing route",
-		})
-	})
-=======
 
 	// route for developers
 	r.GET("/developers", getDevelopers)
 	// ! POST and DELETE routes not tested yet
 	r.POST("/developers", postDevelopers)
 	r.DELETE("/developers", deleteDevelopers)
->>>>>>> d91a3ce49d9b001f1ed849009f4a7e26e3aaf767
 
 	r.Run(":8000")
 
