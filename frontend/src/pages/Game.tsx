@@ -20,7 +20,7 @@ const Game = () => {
 
         const getData = async() => {
             if (subscribed) {
-                console.log("fetching data in About.tsx ...")
+                console.log("fetching data in Game.tsx ...")
                 const response = await fetch(url+"/developers");
                 const json = await response.json();
                 setData(json)
