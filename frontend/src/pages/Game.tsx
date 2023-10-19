@@ -43,9 +43,8 @@ const Game = () => {
             {loaded ?
                 
                 <div className="w-full h-full p-0">
-                    <div className="w-full h-11/20 bg-[url('../../public/fight-background-placeholder.png')] bg-cover">
+                    <div className="w-full h-11/20 bg-[url('../../public/fight-background-placeholder.png')] bg-indigo-500 bg-contain bg-bottom bg-no-repeat">
                         <Leaderboard/>
-                        <h1>test</h1>
                         <h1>test</h1>
                     </div>
                     <Actions/>
