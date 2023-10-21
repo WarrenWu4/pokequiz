@@ -124,6 +124,13 @@ func deleteDevelopers(c *gin.Context) {
 	c.JSON(http.StatusOK, res)
 }
 
+func validate(c *gin.Context) {
+	pin := c.PostForm("pin")
+	new_url := os.Getenv("FRONTEND_URL") + "/game/" + pin
+	fmt.Println(new_url)
+	c.Redirect(http.StatusMovedPermanently, new_url)
+}
+
 func main() {
 
 	fmt.Println("Starting server...")
@@ -153,10 +160,8 @@ func main() {
 	r.POST("/developers", postDevelopers)
 	r.DELETE("/developers", deleteDevelopers)
 
-	// auth, err := authenticator.New()
-	// if err != nil {
-	// 	log.Fatalf("Failed", err)
-	// }
+	// route pin
+	r.POST("/validate", validate)
 
 	r.Run(":8000")
 
