@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/gin-contrib/cors"
+	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 
 	"database/sql"
@@ -13,6 +14,8 @@ import (
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/joho/godotenv"
+	"golang.org/x/oauth2"
+	"golang.org/x/oauth2/google"
 )
 
 type Developer struct {
@@ -143,9 +146,36 @@ func main() {
 
 	gin.SetMode(gin.ReleaseMode)
 
+	conf = &oauth2.Config{
+		ClientID:     os.Getenv("GOOGLE_CLIENT_ID"),
+		ClientSecret: os.Getenv("GOOGLE_SECRET"),
+		RedirectURL:  "http://localhost:8000/auth/",
+		Scopes: []string{
+			"https://www.googleapis.com/auth/userinfo.email",
+			"https://www.googleapis.com/auth/userinfo.profile", // You have to select your own scope from here -> https://developers.google.com/identity/protocols/googlescopes#google_sign-in
+			// "https://www.googleapis.com/auth/profile.emails.read",
+		},
+		Endpoint: google.Endpoint,
+	}
+
 	r := gin.Default()
 
 	r.Use(cors.Default())
+
+	r.Use(sessions.Sessions("goquestsession", store))
+
+	r.GET("/index", indexHandler)
+	authRoutes := r.Group("/auth")
+	{
+		authRoutes.GET("/login", loginHandler)
+		authRoutes.GET("/", authHandler)
+		authRoutes.GET("/logout", logoutHandler)
+	}
+
+	userRoutes := r.Group("/user")
+	{
+		userRoutes.GET("/", userHandler)
+	}
 
 	// default route
 	r.GET("/", func(c *gin.Context) {
