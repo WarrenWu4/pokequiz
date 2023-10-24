@@ -9,6 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"database/sql"
+	"encoding/gob"
 	"log"
 	"os"
 
@@ -16,6 +17,7 @@ import (
 	"github.com/joho/godotenv"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
+	goauth "google.golang.org/api/oauth2/v2"
 )
 
 type Developer struct {
@@ -161,13 +163,13 @@ func main() {
 	r := gin.Default()
 
 	r.Use(cors.Default())
+	gob.Register(goauth.Userinfo{})
 
-	r.Use(sessions.Sessions("goquestsession", store))
+	r.Use(sessions.Sessions("authSession", store))
 
-	r.GET("/index", indexHandler)
 	authRoutes := r.Group("/auth")
 	{
-		authRoutes.GET("/login", loginHandler)
+		authRoutes.GET("/log", loginHandler)
 		authRoutes.GET("/", authHandler)
 		authRoutes.GET("/logout", logoutHandler)
 	}

@@ -6,7 +6,6 @@ import (
 	"encoding/base64"
 	"fmt"
 
-	// "log"
 	"net/http"
 
 	"github.com/gin-contrib/sessions"
@@ -35,16 +34,12 @@ type User struct {
 
 var conf *oauth2.Config
 var state string
-var store = cookie.NewStore([]byte("secret"))
+var store = cookie.NewStore([]byte("random-secret"))
 
 func randToken() string {
 	b := make([]byte, 32)
 	rand.Read(b)
 	return base64.StdEncoding.EncodeToString(b)
-}
-
-func indexHandler(c *gin.Context) {
-	c.HTML(http.StatusOK, "index.tmpl", gin.H{})
 }
 
 func getLoginURL(state string) string {
@@ -56,33 +51,31 @@ func authHandler(c *gin.Context) {
 	session := sessions.Default(c)
 	retrievedState := session.Get("state")
 
-	existingSession := session.Get("ginoauth_google_session")
-	if userInfo, ok := existingSession.(goauth.Userinfo); ok {
-		c.Set("user", userInfo)
-		c.Next()
-		return
-	}
+	// existingSession := session.Get("state")
+	// if userInfo, ok := existingSession.(goauth.Userinfo); ok {
+	// 	c.Set("user", userInfo)
+	// 	c.Next()
+	// 	return
+	// }
 
 	if retrievedState != c.Query("state") {
 		c.AbortWithError(http.StatusUnauthorized, fmt.Errorf("Invalid session state: %s", retrievedState))
 		return
 	}
-
+	// log.Println("RAHHHH")
 	tok, err := conf.Exchange(context.Background(), c.Query("code"))
 	if err != nil {
 		c.AbortWithError(http.StatusBadRequest, err)
 		return
 	}
-
-	// client := conf.Client(context.Background(), tok)
-
+	// log.Println("RAHHHH")
 	oAuth2Service, err := goauth.NewService(c, option.WithTokenSource(conf.TokenSource(c, tok)))
 	if err != nil {
 		// glog.Errorf("[Gin-OAuth] Failed to create oauth service: %v", err)
 		c.AbortWithError(http.StatusInternalServerError, fmt.Errorf("failed to create oauth service: %w", err))
 		return
 	}
-
+	// log.Println("RAHHHH")
 	userInfo, err := oAuth2Service.Userinfo.Get().Do()
 	if err != nil {
 		// glog.Errorf("[Gin-OAuth] Failed to get userinfo for user: %v", err)
@@ -90,21 +83,35 @@ func authHandler(c *gin.Context) {
 		return
 	}
 
-	// c.Set("user", userInfo)
-	session.Set("ginoauth_google_session", userInfo)
-	// c.JSON(http.StatusOK, userInfo)
+	setUserInSession(c, userInfo)
 	c.Redirect(http.StatusMovedPermanently, "/user")
 }
 
-func userHandler(c *gin.Context) {
-	user, _ := c.Get("user")
-	if user == nil {
-		c.JSON(http.StatusOK, gin.H{
-			"message": "no user",
-		})
+func setUserInSession(c *gin.Context, userInfo *goauth.Userinfo) {
+	// Set user data in session
+	session := sessions.Default(c)
+	session.Set("user", userInfo)
+	if err := session.Save(); err != nil {
+		// Handling session save error
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	c.JSON(http.StatusOK, user)
+}
+
+func getUserFromSession(c *gin.Context) {
+	// Get user data from session
+	session := sessions.Default(c)
+	user := session.Get("user")
+
+	if user == nil {
+		c.JSON(http.StatusOK, gin.H{"message": "User not found in session"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"user": user})
+}
+
+func userHandler(c *gin.Context) {
+	getUserFromSession(c)
 }
 
 func getUserInfo() goauth.Userinfo {
@@ -128,10 +135,15 @@ func getUserPicture() string {
 }
 
 func loginHandler(c *gin.Context) {
+
 	state = randToken()
+	// c.Set("state", state)
+
 	session := sessions.Default(c)
 	session.Set("state", state)
 	session.Save()
+
+	// log.Println("state:", session.Get("state"))
 	c.Redirect(http.StatusMovedPermanently, getLoginURL(state))
 }
 
