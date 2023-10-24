@@ -6,6 +6,7 @@ import (
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"github.com/gorilla/websocket"
 
 	"database/sql"
 	"log"
@@ -131,6 +132,37 @@ func validate(c *gin.Context) {
 	c.Redirect(http.StatusMovedPermanently, new_url)
 }
 
+var upgrader = websocket.Upgrader{
+	ReadBufferSize:  1024,
+	WriteBufferSize: 1024,
+}
+
+func gameSocket(w http.ResponseWriter, r *http.Request) {
+	conn, err := upgrader.Upgrade(w, r, nil)
+	if err != nil {
+		fmt.Println("Failed to upgrade to websocket:", err)
+		return
+	}
+	for {
+		t, msg, err := conn.ReadMessage()
+		if err != nil {
+			fmt.Println("failed to read message: ", err)
+			return
+		}
+		fmt.Println("message type: ", t)
+		fmt.Println("message: ", string(msg))
+	}
+}
+
+func gameHandler(c *gin.Context) {
+	gameId := c.Param("gameId")
+	fmt.Println(gameId)
+	fmt.Println("Game ID: ", gameId)
+	fmt.Println("------------------")
+	fmt.Println("Websocket Test:")
+	gameSocket(c.Writer, c.Request)
+}
+
 func main() {
 
 	fmt.Println("Starting server...")
@@ -162,6 +194,9 @@ func main() {
 
 	// route pin
 	r.POST("/validate", validate)
+
+	// game web socket
+	r.GET("/game/gameId", gameHandler)
 
 	r.Run(":8000")
 
