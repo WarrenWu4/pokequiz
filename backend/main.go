@@ -148,6 +148,8 @@ func main() {
 
 	gin.SetMode(gin.ReleaseMode)
 
+	r := gin.Default()
+
 	conf = &oauth2.Config{
 		ClientID:     os.Getenv("GOOGLE_CLIENT_ID"),
 		ClientSecret: os.Getenv("GOOGLE_SECRET"),
@@ -155,23 +157,19 @@ func main() {
 		Scopes: []string{
 			"https://www.googleapis.com/auth/userinfo.email",
 			"https://www.googleapis.com/auth/userinfo.profile", // You have to select your own scope from here -> https://developers.google.com/identity/protocols/googlescopes#google_sign-in
-			// "https://www.googleapis.com/auth/profile.emails.read",
 		},
 		Endpoint: google.Endpoint,
 	}
-
-	r := gin.Default()
 
 	r.Use(cors.Default())
 	gob.Register(goauth.Userinfo{})
 
 	r.Use(sessions.Sessions("authSession", store))
-
+	r.GET("/signin", loginHandler)
+	r.GET("/signout", logoutHandler)
 	authRoutes := r.Group("/auth")
 	{
-		authRoutes.GET("/log", loginHandler)
 		authRoutes.GET("/", authHandler)
-		authRoutes.GET("/logout", logoutHandler)
 	}
 
 	userRoutes := r.Group("/user")
