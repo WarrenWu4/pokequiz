@@ -162,6 +162,7 @@ func main() {
 	}
 
 	r.Use(cors.Default())
+	gob.Register(&oauth2.Token{})
 	gob.Register(goauth.Userinfo{})
 
 	r.Use(sessions.Sessions("authSession", store))
