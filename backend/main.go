@@ -13,6 +13,7 @@ import (
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/joho/godotenv"
+	"github.com/gorilla/websocket"
 )
 
 type Developer struct {
@@ -131,9 +132,35 @@ func validate(c *gin.Context) {
 	c.Redirect(http.StatusMovedPermanently, new_url)
 }
 
+var wsupgrader = websocket.Upgrader{
+	ReadBufferSize:  1024,
+	WriteBufferSize: 1024,
+	CheckOrigin: func(r *http.Request) bool {
+		return true
+	},
+}
+
+func wshandler(w http.ResponseWriter, r *http.Request) {
+    conn, err := wsupgrader.Upgrade(w, r, nil)
+    if err != nil {
+        fmt.Println("Failed to set websocket upgrade: %+v", err)
+        return
+    }
+
+    for {
+        t, msg, err := conn.ReadMessage()
+        if err != nil {
+            break
+        }
+        conn.WriteMessage(t, msg)
+    }
+}
+
 func main() {
 
 	fmt.Println("Starting server...")
+
+	r := gin.New()
 
 	// Load connection string from .env file
 	err := godotenv.Load()
@@ -142,8 +169,6 @@ func main() {
 	}
 
 	gin.SetMode(gin.ReleaseMode)
-
-	r := gin.Default()
 
 	r.Use(cors.Default())
 
@@ -163,6 +188,11 @@ func main() {
 	// route pin
 	r.POST("/validate", validate)
 
-	r.Run(":8000")
+	r.GET("/ws", func(c *gin.Context) {
+        wshandler(c.Writer, c.Request)
+    })
 
+	if err := r.Run(":8000"); err != nil {
+		log.Fatal("failed run app: ", err)
+	}
 }

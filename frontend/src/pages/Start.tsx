@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import url from "../main";
 import Navbar from "../components/Navbar";
+import { socket } from "../utils/socket";
 
 const Start = () => {
 
@@ -18,6 +19,17 @@ const Start = () => {
                 setData(json.data);
             }
         }
+
+        socket.onmessage = (e) => {
+            console.log(e.data);
+        }
+
+        socket.onopen = () => {
+            setInterval(() => {
+                socket.send(JSON.stringify({type: "ping"}));
+            })
+        }
+
         
         getData();
         console.log(data)
