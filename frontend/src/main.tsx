@@ -5,7 +5,8 @@ import './index.css'
 import Start from './pages/Start.tsx';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import About from './pages/About.tsx';
-import Game from './pages/Game.tsx'
+import Game from './pages/Game.tsx';
+import Waiting from './pages/Waiting.tsx';
 
 const router = createBrowserRouter([
   {
@@ -19,6 +20,10 @@ const router = createBrowserRouter([
   {
     path:"/game/:id",
     element: <Game/>
+  },
+  {
+    path: "/waiting",
+    element: <Waiting/>
   }
 ]);
 
