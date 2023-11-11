@@ -14,8 +14,8 @@ import (
 	"os"
 
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/joho/godotenv"
 	"github.com/gorilla/websocket"
+	"github.com/joho/godotenv"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
 	goauth "google.golang.org/api/oauth2/v2"
@@ -146,26 +146,24 @@ var wsupgrader = websocket.Upgrader{
 }
 
 func wshandler(w http.ResponseWriter, r *http.Request) {
-    conn, err := wsupgrader.Upgrade(w, r, nil)
-    if err != nil {
-        fmt.Println("Failed to set websocket upgrade: %+v", err)
-        return
-    }
+	conn, err := wsupgrader.Upgrade(w, r, nil)
+	if err != nil {
+		fmt.Println("Failed to set websocket upgrade: %+v", err)
+		return
+	}
 
-    for {
-        t, msg, err := conn.ReadMessage()
-        if err != nil {
-            break
-        }
-        conn.WriteMessage(t, msg)
-    }
+	for {
+		t, msg, err := conn.ReadMessage()
+		if err != nil {
+			break
+		}
+		conn.WriteMessage(t, msg)
+	}
 }
 
 func main() {
 
 	fmt.Println("Starting server...")
-
-	r := gin.New()
 
 	// Load connection string from .env file
 	err := godotenv.Load()
@@ -222,8 +220,8 @@ func main() {
 	r.POST("/validate", validate)
 
 	r.GET("/ws", func(c *gin.Context) {
-        wshandler(c.Writer, c.Request)
-    })
+		wshandler(c.Writer, c.Request)
+	})
 
 	if err := r.Run(":8000"); err != nil {
 		log.Fatal("failed run app: ", err)
