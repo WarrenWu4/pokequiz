@@ -1,4 +1,4 @@
-package main
+package pokeauth
 
 import (
 	"context"
@@ -22,6 +22,14 @@ var conf *oauth2.Config
 var state string
 var store = cookie.NewStore([]byte("random-secret"))
 
+func GetStore() cookie.Store {
+	return store
+}
+
+func SetConfig(config *oauth2.Config) {
+	conf = config
+}
+
 func randToken() string {
 	b := make([]byte, 32)
 	rand.Read(b)
@@ -32,7 +40,7 @@ func getLoginURL(state string) string {
 	return conf.AuthCodeURL(state)
 }
 
-func authHandler(c *gin.Context) {
+func AuthHandler(c *gin.Context) {
 	// Handle the exchange code to initiate a transport.
 	session := sessions.Default(c)
 	retrievedState := session.Get("state")
@@ -110,7 +118,7 @@ func getUserFromSession(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"user": user})
 }
 
-func userHandler(c *gin.Context) {
+func UserHandler(c *gin.Context) {
 	getUserFromSession(c)
 }
 
@@ -168,7 +176,7 @@ func getUserPicture(c *gin.Context) string {
 	}
 }
 
-func loginHandler(c *gin.Context) {
+func LoginHandler(c *gin.Context) {
 	state = randToken()
 
 	session := sessions.Default(c)
@@ -184,7 +192,7 @@ func loginHandler(c *gin.Context) {
 	c.Redirect(http.StatusMovedPermanently, getLoginURL(state))
 }
 
-func logoutHandler(c *gin.Context) {
+func LogoutHandler(c *gin.Context) {
 	session := sessions.Default(c)
 	// log.Println("Showing")
 	session.Clear()

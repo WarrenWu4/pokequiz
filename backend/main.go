@@ -13,9 +13,11 @@ import (
 	"log"
 	"os"
 
+	"backend/pokeauth"
+
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/joho/godotenv"
 	"github.com/gorilla/websocket"
+	"github.com/joho/godotenv"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
 	goauth "google.golang.org/api/oauth2/v2"
@@ -146,26 +148,24 @@ var wsupgrader = websocket.Upgrader{
 }
 
 func wshandler(w http.ResponseWriter, r *http.Request) {
-    conn, err := wsupgrader.Upgrade(w, r, nil)
-    if err != nil {
-        fmt.Println("Failed to set websocket upgrade: %+v", err)
-        return
-    }
+	conn, err := wsupgrader.Upgrade(w, r, nil)
+	if err != nil {
+		fmt.Println("Failed to set websocket upgrade: %+v", err)
+		return
+	}
 
-    for {
-        t, msg, err := conn.ReadMessage()
-        if err != nil {
-            break
-        }
-        conn.WriteMessage(t, msg)
-    }
+	for {
+		t, msg, err := conn.ReadMessage()
+		if err != nil {
+			break
+		}
+		conn.WriteMessage(t, msg)
+	}
 }
 
 func main() {
 
 	fmt.Println("Starting server...")
-
-	r := gin.New()
 
 	// Load connection string from .env file
 	err := godotenv.Load()
@@ -177,7 +177,7 @@ func main() {
 
 	r := gin.Default()
 
-	conf = &oauth2.Config{
+	conf := &oauth2.Config{
 		ClientID:     os.Getenv("GOOGLE_CLIENT_ID"),
 		ClientSecret: os.Getenv("GOOGLE_SECRET"),
 		RedirectURL:  "http://localhost:8000/auth/",
@@ -188,21 +188,23 @@ func main() {
 		Endpoint: google.Endpoint,
 	}
 
+	pokeauth.SetConfig(conf)
+
 	r.Use(cors.Default())
 	gob.Register(&oauth2.Token{})
 	gob.Register(goauth.Userinfo{})
 
-	r.Use(sessions.Sessions("authSession", store))
-	r.GET("/signin", loginHandler)
-	r.GET("/signout", logoutHandler)
+	r.Use(sessions.Sessions("authSession", pokeauth.GetStore()))
+	r.GET("/signin", pokeauth.LoginHandler)
+	r.GET("/signout", pokeauth.LogoutHandler)
 	authRoutes := r.Group("/auth")
 	{
-		authRoutes.GET("/", authHandler)
+		authRoutes.GET("/", pokeauth.AuthHandler)
 	}
 
 	userRoutes := r.Group("/user")
 	{
-		userRoutes.GET("/", userHandler)
+		userRoutes.GET("/", pokeauth.UserHandler)
 	}
 
 	// default route
@@ -222,8 +224,8 @@ func main() {
 	r.POST("/validate", validate)
 
 	r.GET("/ws", func(c *gin.Context) {
-        wshandler(c.Writer, c.Request)
-    })
+		wshandler(c.Writer, c.Request)
+	})
 
 	if err := r.Run(":8000"); err != nil {
 		log.Fatal("failed run app: ", err)
