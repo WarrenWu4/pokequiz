@@ -3,9 +3,9 @@ import ReactDOM from "react-dom/client";
 
 import "./index.css";
 import Start from "./pages/Start.tsx";
-import Game from "./pages/Game.tsx";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import About from "./pages/About.tsx";
+import QuestionSelector from "./pages/QuestionSelector.tsx";
 
 const router = createBrowserRouter([
     {
@@ -17,8 +17,8 @@ const router = createBrowserRouter([
         element: <About />,
     },
     {
-        path: "/game/:pin",
-        element: <Game />,
+        path: "/question",
+        element: <QuestionSelector />,
     },
 ]);
 
