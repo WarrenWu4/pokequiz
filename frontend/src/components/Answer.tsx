@@ -1,4 +1,5 @@
-export default function Answer(props: any) {
+export default function Answer() {
+
     return (
         <div className="flex justify-center items-center gap-6">
             <textarea

@@ -23,7 +23,7 @@ export default function QuestionSelector() {
     };
 
     return (
-        <div className="w-full min-h-[100vh] p-4 text-white bg-[#3A4466] p-0">
+        <div className="w-full min-h-[100vh] p-4 text-white bg-[#3A4466]">
             <h1 className="text-4xl font-bold text-center pt-2">POKEDEX</h1>
             <div className="flex items-center justify-center w-full border-b-[1px] p-4 gap-6">
                 <img src="/image.png" className="w-1/3 h-1/3"></img>
@@ -44,7 +44,7 @@ export default function QuestionSelector() {
                 </form>
             </div>
             <div className="flex flex-col items-center justify-start w-full h-full p-4 pb-0 gap-6">
-                {questions.map((question, index) => (
+                {questions.map((index) => (
                     <Question
                         key={index}
                         onOpen={handleModalOpen}
@@ -68,7 +68,7 @@ export default function QuestionSelector() {
                 } fixed top-[10vh] left-[8vw] z-10 items-center justify-center  bg-[#18233AF7] rounded-lg shadow-xl`}
             >
                 <form className="flex flex-col items-center justify-center w-full h-full">
-                    <div className="flex items-center justify-between w-full h-full p-2 border-b-[1px] border-b-slate-500 p-3">
+                    <div className="flex items-center justify-between w-full h-full p-2 border-b-[1px] border-b-slate-500">
                         <input
                             type="text"
                             name="question-title"
