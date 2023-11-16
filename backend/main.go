@@ -5,15 +5,23 @@ import (
 	"net/http"
 
 	"github.com/gin-contrib/cors"
+	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
 
 	"database/sql"
+	"encoding/gob"
 	"log"
 	"os"
 
+	"backend/pokeauth"
+
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/gorilla/websocket"
 	"github.com/joho/godotenv"
+	"golang.org/x/oauth2"
+	"golang.org/x/oauth2/google"
+	goauth "google.golang.org/api/oauth2/v2"
 )
 
 type Developer struct {
@@ -132,35 +140,28 @@ func validate(c *gin.Context) {
 	c.Redirect(http.StatusMovedPermanently, new_url)
 }
 
-var upgrader = websocket.Upgrader{
+var wsupgrader = websocket.Upgrader{
 	ReadBufferSize:  1024,
 	WriteBufferSize: 1024,
+	CheckOrigin: func(r *http.Request) bool {
+		return true
+	},
 }
 
-func gameSocket(w http.ResponseWriter, r *http.Request) {
-	conn, err := upgrader.Upgrade(w, r, nil)
+func wshandler(w http.ResponseWriter, r *http.Request) {
+	conn, err := wsupgrader.Upgrade(w, r, nil)
 	if err != nil {
-		fmt.Println("Failed to upgrade to websocket:", err)
+		fmt.Println("Failed to set websocket upgrade: %+v", err)
 		return
 	}
+
 	for {
 		t, msg, err := conn.ReadMessage()
 		if err != nil {
-			fmt.Println("failed to read message: ", err)
-			return
+			break
 		}
-		fmt.Println("message type: ", t)
-		fmt.Println("message: ", string(msg))
+		conn.WriteMessage(t, msg)
 	}
-}
-
-func gameHandler(c *gin.Context) {
-	gameId := c.Param("gameId")
-	fmt.Println(gameId)
-	fmt.Println("Game ID: ", gameId)
-	fmt.Println("------------------")
-	fmt.Println("Websocket Test:")
-	gameSocket(c.Writer, c.Request)
 }
 
 func main() {
@@ -177,7 +178,35 @@ func main() {
 
 	r := gin.Default()
 
+	conf := &oauth2.Config{
+		ClientID:     os.Getenv("GOOGLE_CLIENT_ID"),
+		ClientSecret: os.Getenv("GOOGLE_SECRET"),
+		RedirectURL:  "http://localhost:8000/auth/",
+		Scopes: []string{
+			"https://www.googleapis.com/auth/userinfo.email",
+			"https://www.googleapis.com/auth/userinfo.profile", // You have to select your own scope from here -> https://developers.google.com/identity/protocols/googlescopes#google_sign-in
+		},
+		Endpoint: google.Endpoint,
+	}
+
+	pokeauth.SetConfig(conf)
+
 	r.Use(cors.Default())
+	gob.Register(&oauth2.Token{})
+	gob.Register(goauth.Userinfo{})
+
+	r.Use(sessions.Sessions("authSession", pokeauth.GetStore()))
+	r.GET("/signin", pokeauth.LoginHandler)
+	r.GET("/signout", pokeauth.LogoutHandler)
+	authRoutes := r.Group("/auth")
+	{
+		authRoutes.GET("/", pokeauth.AuthHandler)
+	}
+
+	userRoutes := r.Group("/user")
+	{
+		userRoutes.GET("/", pokeauth.UserHandler)
+	}
 
 	// default route
 	r.GET("/", func(c *gin.Context) {
@@ -195,9 +224,11 @@ func main() {
 	// route pin
 	r.POST("/validate", validate)
 
-	// game web socket
-	r.GET("/game/gameId", gameHandler)
+	r.GET("/ws", func(c *gin.Context) {
+		wshandler(c.Writer, c.Request)
+	})
 
-	r.Run(":8000")
-
+	if err := r.Run(":8000"); err != nil {
+		log.Fatal("failed run app: ", err)
+	}
 }

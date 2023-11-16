@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import url from "../main";
 import Navbar from "../components/Navbar";
+import { socket } from "../utils/socket";
 
 const Start = () => {
     const [data, setData] = useState<string>("");
@@ -18,8 +19,19 @@ const Start = () => {
                 const json = await response.json();
                 setData(json.data);
             }
-        };
+        }
 
+        socket.onmessage = (e) => {
+            console.log(e.data);
+        }
+
+        socket.onopen = () => {
+            setInterval(() => {
+                socket.send(JSON.stringify({type: "ping"}));
+            })
+        }
+
+        
         getData();
         console.log(data);
         return () => {
