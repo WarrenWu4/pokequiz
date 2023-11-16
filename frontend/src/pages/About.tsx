@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState } from "react";
 import url from "../main";
 import Loading from "../components/Loading";
 
@@ -10,37 +10,34 @@ interface Developer {
 }
 
 const About = () => {
-
-    const [loaded, setLoaded] = useState<boolean>(false)
-    const [data, setData] = useState<Developer[]>([])
+    const [loaded, setLoaded] = useState<boolean>(false);
+    const [data, setData] = useState<Developer[]>([]);
 
     useEffect(() => {
-
         let subscribed = true;
 
-        const getData = async() => {
+        const getData = async () => {
             if (subscribed) {
-                console.log("fetching data in About.tsx ...")
-                const response = await fetch(url+"/developers");
+                console.log("fetching data in About.tsx ...");
+                const response = await fetch(url + "/developers");
                 const json = await response.json();
-                setData(json)
-                setLoaded(true)
+                setData(json);
+                setLoaded(true);
             }
-        }
+        };
 
         getData();
 
-        return () => {  
+        return () => {
             subscribed = false;
-        }
-
-    }, [])
+        };
+    }, []);
 
     return (
         <div className="w-full h-full p-4 text-white">
-            {loaded ?
+            {loaded ? (
                 <div className="w-full h-full flex p-12 gap-x-12">
-                    {data.map((dev:Developer) => {
+                    {data.map((dev: Developer) => {
                         return (
                             <div key={dev.name}>
                                 <h1>{dev.name}</h1>
@@ -48,14 +45,14 @@ const About = () => {
                                 <h2>{dev.major}</h2>
                                 <p>{dev.about}</p>
                             </div>
-                        )
+                        );
                     })}
                 </div>
-                :
-                <Loading/>
-            }
+            ) : (
+                <Loading />
+            )}
         </div>
-    )
-}
+    );
+};
 
-export default About
+export default About;
