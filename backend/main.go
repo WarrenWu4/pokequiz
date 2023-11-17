@@ -13,6 +13,8 @@ import (
 	"log"
 	"os"
 
+	// "backend/rooms"
+
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/joho/godotenv"
 	"github.com/gorilla/websocket"
@@ -161,6 +163,26 @@ func wshandler(w http.ResponseWriter, r *http.Request) {
     }
 }
 
+// func (server *WsServer) findRoomByName(name string) *Room {
+//     var foundRoom *Room
+//     for room := range server.rooms {
+//         if room.GetName() == name {
+//             foundRoom = room
+//             break
+//         }
+//     }
+
+//     return foundRoom
+// }
+
+// func (server *WsServer) createRoom(name string) *Room {
+//     room := NewRoom(name)
+//     go room.RunRoom()
+//     server.rooms[room] = true
+
+//     return room
+// }
+
 func main() {
 
 	fmt.Println("Starting server...")
@@ -175,7 +197,7 @@ func main() {
 
 	gin.SetMode(gin.ReleaseMode)
 
-	r := gin.Default()
+	// r := gin.Default()
 
 	conf = &oauth2.Config{
 		ClientID:     os.Getenv("GOOGLE_CLIENT_ID"),
