@@ -5,7 +5,6 @@ import Navbar from "../components/Navbar";
 const Waiting = () => {
 
     const [data, setData] = useState<string>()
-    const [pin, setPin] = useState<string>("0000");
 
     useEffect(() => {
         let subscribed = true;
@@ -30,11 +29,6 @@ const Waiting = () => {
         console.log("submitting form...")
     }
 
-    const handleInput = (e:any) => {
-        if (e.target.value.length <= 4) {
-            setPin(e.target.value)
-        }
-    }
 
     return (
         <div className="w-screen h-screen flex flex-col bg-[url('/bg-image.png')] bg-cover bg-no-repeat">
