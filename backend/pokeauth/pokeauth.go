@@ -115,14 +115,15 @@ func getUserFromSession(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{"message": "User not found in session"})
 		return
 	}
+	// return user
 	c.JSON(http.StatusOK, gin.H{"user": user})
 }
 
-func UserHandler(c *gin.Context) {
-	getUserFromSession(c)
-}
+// func UserHandler(c *gin.Context) {
+// 	getUserFromSession(c)
+// }
 
-func getUserInfo(c *gin.Context) interface{} {
+func GetUserInfo(c *gin.Context) interface{} {
 	session := sessions.Default(c)
 	user := session.Get("user")
 	if user == nil {
@@ -132,10 +133,10 @@ func getUserInfo(c *gin.Context) interface{} {
 	return user
 }
 
-func getUserEmail(c *gin.Context) string {
+func GetUserEmail(c *gin.Context) string {
 	session := sessions.Default(c)
 	user := session.Get("user")
-	if info, ok := user.(*goauth.Userinfo); ok {
+	if info, ok := user.(goauth.Userinfo); ok {
 		return info.Email
 	} else {
 		c.JSON(http.StatusOK, gin.H{"message": "User not found in session"})
@@ -143,10 +144,10 @@ func getUserEmail(c *gin.Context) string {
 	}
 }
 
-func getUserID(c *gin.Context) string {
+func GetUserID(c *gin.Context) string {
 	session := sessions.Default(c)
 	user := session.Get("user")
-	if info, ok := user.(*goauth.Userinfo); ok {
+	if info, ok := user.(goauth.Userinfo); ok {
 		return info.Id
 	} else {
 		c.JSON(http.StatusOK, gin.H{"message": "User not found in session"})
@@ -154,10 +155,10 @@ func getUserID(c *gin.Context) string {
 	}
 }
 
-func getUserName(c *gin.Context) string {
+func GetUserName(c *gin.Context) string {
 	session := sessions.Default(c)
 	user := session.Get("user")
-	if info, ok := user.(*goauth.Userinfo); ok {
+	if info, ok := user.(goauth.Userinfo); ok {
 		return info.Name
 	} else {
 		c.JSON(http.StatusOK, gin.H{"message": "User not found in session"})
@@ -165,10 +166,10 @@ func getUserName(c *gin.Context) string {
 	}
 }
 
-func getUserPicture(c *gin.Context) string {
+func GetUserPicture(c *gin.Context) string {
 	session := sessions.Default(c)
 	user := session.Get("user")
-	if info, ok := user.(*goauth.Userinfo); ok {
+	if info, ok := user.(goauth.Userinfo); ok {
 		return info.Picture
 	} else {
 		c.JSON(http.StatusOK, gin.H{"message": "User not found in session"})

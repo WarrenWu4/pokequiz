@@ -204,7 +204,8 @@ func main() {
 
 	userRoutes := r.Group("/user")
 	{
-		userRoutes.GET("/", pokeauth.UserHandler)
+		// userRoutes.GET("/", pokeauth.UserHandler)
+		userRoutes.GET("/", RegisterUser)
 	}
 
 	// default route
