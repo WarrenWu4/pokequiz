@@ -5,14 +5,22 @@ import (
 	"net/http"
 
 	"github.com/gin-contrib/cors"
+	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 
 	"database/sql"
+	"encoding/gob"
 	"log"
 	"os"
 
+	"backend/pokeauth"
+
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/gorilla/websocket"
 	"github.com/joho/godotenv"
+	"golang.org/x/oauth2"
+	"golang.org/x/oauth2/google"
+	goauth "google.golang.org/api/oauth2/v2"
 )
 
 type Developer struct {
@@ -124,6 +132,37 @@ func deleteDevelopers(c *gin.Context) {
 	c.JSON(http.StatusOK, res)
 }
 
+func validate(c *gin.Context) {
+	pin := c.PostForm("pin")
+	new_url := os.Getenv("FRONTEND_URL") + "/game/" + pin
+	fmt.Println(new_url)
+	c.Redirect(http.StatusMovedPermanently, new_url)
+}
+
+var wsupgrader = websocket.Upgrader{
+	ReadBufferSize:  1024,
+	WriteBufferSize: 1024,
+	CheckOrigin: func(r *http.Request) bool {
+		return true
+	},
+}
+
+func wshandler(w http.ResponseWriter, r *http.Request) {
+	conn, err := wsupgrader.Upgrade(w, r, nil)
+	if err != nil {
+		fmt.Println("Failed to set websocket upgrade: %+v", err)
+		return
+	}
+
+	for {
+		t, msg, err := conn.ReadMessage()
+		if err != nil {
+			break
+		}
+		conn.WriteMessage(t, msg)
+	}
+}
+
 func main() {
 
 	fmt.Println("Starting server...")
@@ -138,7 +177,35 @@ func main() {
 
 	r := gin.Default()
 
+	conf := &oauth2.Config{
+		ClientID:     os.Getenv("GOOGLE_CLIENT_ID"),
+		ClientSecret: os.Getenv("GOOGLE_SECRET"),
+		RedirectURL:  "http://localhost:8000/auth/",
+		Scopes: []string{
+			"https://www.googleapis.com/auth/userinfo.email",
+			"https://www.googleapis.com/auth/userinfo.profile", // You have to select your own scope from here -> https://developers.google.com/identity/protocols/googlescopes#google_sign-in
+		},
+		Endpoint: google.Endpoint,
+	}
+
+	pokeauth.SetConfig(conf)
+
 	r.Use(cors.Default())
+	gob.Register(&oauth2.Token{})
+	gob.Register(goauth.Userinfo{})
+
+	r.Use(sessions.Sessions("authSession", pokeauth.GetStore()))
+	r.GET("/signin", pokeauth.LoginHandler)
+	r.GET("/signout", pokeauth.LogoutHandler)
+	authRoutes := r.Group("/auth")
+	{
+		authRoutes.GET("/", pokeauth.AuthHandler)
+	}
+
+	userRoutes := r.Group("/user")
+	{
+		userRoutes.GET("/", pokeauth.UserHandler)
+	}
 
 	// default route
 	r.GET("/", func(c *gin.Context) {
@@ -153,6 +220,14 @@ func main() {
 	r.POST("/developers", postDevelopers)
 	r.DELETE("/developers", deleteDevelopers)
 
-	r.Run(":8000")
+	// route pin
+	r.POST("/validate", validate)
 
+	r.GET("/ws", func(c *gin.Context) {
+		wshandler(c.Writer, c.Request)
+	})
+
+	if err := r.Run(":8000"); err != nil {
+		log.Fatal("failed run app: ", err)
+	}
 }
