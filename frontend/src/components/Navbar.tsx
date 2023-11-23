@@ -12,9 +12,9 @@ const Navbar = () => {
             <div className="w-10 aspect-square rounded-full bg-[#F9B572] border-2 border-solid border-white">
                 <img src="/icons/gear.svg"/>
             </div>
-            <div className="w-10 aspect-square rounded-full bg-[#F9B572] border-2 border-solid border-white">
+            <a href="/login"  className="w-10 aspect-square rounded-full bg-[#F9B572] border-2 border-solid border-white">
                 <img src="/icons/slime.svg"/>
-            </div>
+            </a>
         </div>
     );
 };

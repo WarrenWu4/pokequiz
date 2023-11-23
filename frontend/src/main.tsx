@@ -6,6 +6,7 @@ import Start from "./pages/Start.tsx";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import About from "./pages/About.tsx";
 import QuestionSelector from "./pages/QuestionSelector.tsx";
+import Game from "./pages/Game.tsx";
 
 const router = createBrowserRouter([
     {
@@ -15,6 +16,10 @@ const router = createBrowserRouter([
     {
         path: "/about",
         element: <About />,
+    },
+    {
+        path: "/game",
+        element: <Game />,
     },
     {
         path: "/question",
