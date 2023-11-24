@@ -8,7 +8,6 @@ import About from './pages/About.tsx';
 import Game from './pages/Game.tsx';
 import Waiting from './pages/Waiting.tsx';
 import QuestionSelector from "./pages/QuestionSelector.tsx";
-import Game from "./pages/Game.tsx";
 
 const router = createBrowserRouter([
   {
