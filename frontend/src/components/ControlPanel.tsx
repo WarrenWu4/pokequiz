@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Question, UserBattleData } from "../types";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 import { db } from "../firebase";
 
 interface ControlPanelProps {
@@ -130,14 +130,14 @@ const ControlPanel = ({state, setControlState, setGraphicsState, questionId, use
             setGraphicsState("correct")
             setUserBattleData({...userBattleData, pokemonHP: [userBattleData.pokemonHP[0], userBattleData.pokemonHP[1]*(userBattleData.currQuestionNum/quizLength)]})
             const temp = {...userBattleData, pokemonHP: [userBattleData.pokemonHP[0], userBattleData.pokemonHP[1]*(userBattleData.currQuestionNum/quizLength)]}
-            await updateDoc(doc(db, `quizzes/${quizId}/players`, uid), temp)
+            await setDoc(doc(db, `quizzes/${quizId}/players`, uid), temp)
         }
         // else incorrect set graphics state to "incorrect", adjust pokemon hp, update database
         else {
             setGraphicsState("incorrect")
             setUserBattleData({...userBattleData, pokemonHP: [userBattleData.pokemonHP[0]*(1 - userBattleData.currQuestionNum/quizLength), userBattleData.pokemonHP[1]]})
             const temp = {...userBattleData, pokemonHP: [userBattleData.pokemonHP[0]*(1 -userBattleData.currQuestionNum/quizLength), userBattleData.pokemonHP[1]]}
-            await updateDoc(doc(db, `quizzes/${quizId}/players`, uid), temp)
+            await setDoc(doc(db, `quizzes/${quizId}/players`, uid), temp)
         }
 
     }
@@ -149,7 +149,7 @@ const ControlPanel = ({state, setControlState, setGraphicsState, questionId, use
             setUserBattleData({...userBattleData, items: userBattleData.items.filter((i) => i !== item), pokemonHP: [userBattleData.pokemonHP[0]+20, userBattleData.pokemonHP[1]]})
             const temp = {...userBattleData, items: userBattleData.items.filter((i) => i !== item), pokemonHP: [userBattleData.pokemonHP[0]+20, userBattleData.pokemonHP[1]]}
             // update database
-            await updateDoc(doc(db, `quizzes/${quizId}/players`, uid), temp)
+            await setDoc(doc(db, `quizzes/${quizId}/players`, uid), temp)
         }
 
     }
