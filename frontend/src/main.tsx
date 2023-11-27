@@ -28,7 +28,7 @@ const router = createBrowserRouter([
         element: <Start state={"error"}/>,
     },
     {
-        path: "/gameover",
+        path: "/gameover/:score/:quizId",
         element: <GameOver/>
     },
     {

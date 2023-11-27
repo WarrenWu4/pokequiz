@@ -7,9 +7,7 @@ import GraphicsPanel from "../components/GraphicsPanel";
 import ControlPanel from "../components/ControlPanel"
 import Loading from "../components/Loading";
 
-// todo: add game over
 // todo: fix mon graphics
-// todo: add event listener for keypress
 
 const Game = () => {
 
@@ -43,7 +41,7 @@ const Game = () => {
     })
 
     useEffect(() => {
-
+        console.log("Graphics State Changed")
         const resetPlayerData = async() => {
             if (id && uid) {
             const temp = {
@@ -56,12 +54,36 @@ const Game = () => {
             await setDoc(doc(db, `quizzes/${id}/players`, uid), temp)
         }}
 
+        const handleKeyDown = (e:any) => {
+            console.log(graphicsState)
+            if (graphicsState === "question") return;
+            const key = e.key;
+            if (key === "w") {
+                setGraphicsState("question")
+                setControlState("menu")
+                setUserBattleData({...userBattleData, currQuestionNum: userBattleData.currQuestionNum+1})
+            }
+        }
+        const handleMouseDown = () => {
+            if (graphicsState === "question") return;
+            setGraphicsState("question")
+            setControlState("menu")
+            setUserBattleData({...userBattleData, currQuestionNum: userBattleData.currQuestionNum+1})
+        }
+        document.addEventListener("keydown", handleKeyDown)
+        document.addEventListener("mousedown", handleMouseDown)
+
         if (userBattleData.currQuestionNum === quizData?.questionIds.length) {
             resetPlayerData()
-            nav(`/gameover/${userBattleData.score}`)
+            nav(`/gameover/${userBattleData.score}/${id}`)
         }
 
-    }, [userBattleData])
+        return () => {
+            document.removeEventListener("keydown", handleKeyDown)
+            document.removeEventListener("mousedown", handleMouseDown)
+        }
+
+    }, [graphicsState])
 
     useEffect(() => {
 
@@ -95,22 +117,9 @@ const Game = () => {
             }
         }
 
-        const handleKeyDown = (e:any) => {
-            const key = e.key;
-            if (key === "w") {
-                setGraphicsState("question")
-                setControlState("menu")
-                setUserBattleData({...userBattleData, currQuestionNum: userBattleData.currQuestionNum+1})
-            }
-        }
-        document.addEventListener("keydown", handleKeyDown)
-
         getQuizData()
         getBattleData()
 
-        return () => {
-            document.removeEventListener("keydown", handleKeyDown)
-        }
     }, [])
 
     return ((quizData && id && uid) ?
