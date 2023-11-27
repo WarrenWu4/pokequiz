@@ -11,10 +11,9 @@ interface GraphicsPanel {
     pokemonHP: number[];
 }
 
-const GraphicsPanel = ({state, pokemon, questionId, pokemonHP}: GraphicsPanel) => {
+const GraphicsPanel = ({state, pokemon, questionId}: GraphicsPanel) => {
 
     const [question, setQuestion] = useState<Question>()
-    console.log(pokemonHP)
     // get question info
     useEffect(() => {
 
@@ -58,7 +57,7 @@ const GraphicsPanel = ({state, pokemon, questionId, pokemonHP}: GraphicsPanel) =
             :""}
 
             {(state === "incorrect") ?
-           <div className="absolute p-2 w-full h-full flex items-center justify-center opacity-90">
+            <div className="absolute p-2 w-full h-full flex items-center justify-center opacity-90">
                 <div className="bg-[#130E01] w-full h-full text-white font-bold text-2xl rounded-md flex justify-center items-center p-4">
                     Uh oh, you got it wrong. The correct answer was: {question?.answer}<br/>
                     click or tap to continue~~

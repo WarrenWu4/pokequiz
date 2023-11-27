@@ -8,6 +8,7 @@ import ControlPanel from "../components/ControlPanel"
 import Loading from "../components/Loading";
 
 // todo: fix mon graphics
+// todo: implement run
 
 const Game = () => {
 
@@ -123,7 +124,7 @@ const Game = () => {
     }, [])
 
     return ((quizData && id && uid) ?
-        <div className="w-screen h-screen overflow-x-hidden bg-[#5A6988] bg-center bg-no-repeat bg-cover">
+        <div className="w-screen h-screen overflow-x-hidden bg-[#5A6988] bg-center bg-no-repeat bg-cover relative">
 
             <GraphicsPanel 
                 state={graphicsState} 
