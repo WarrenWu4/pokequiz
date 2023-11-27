@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react"
-import url from "../main";
 import Navbar from "../components/Navbar";
 
 const Waiting = () => {
@@ -12,7 +11,7 @@ const Waiting = () => {
         const getData = async() => {
             if (subscribed) {
                 console.log("fetching data in Start.tsx ...")
-                const response = await fetch(url+"/");
+                const response = await fetch("/");
                 const json = await response.json();
                 setData(json.data);
             }

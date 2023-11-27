@@ -2,34 +2,34 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 
 import './index.css'
-import Start from './pages/Start.tsx';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
-import About from './pages/About.tsx';
+
+import Start from './pages/Start.tsx';
+import Profile from "./pages/Profile.tsx";
 import Game from './pages/Game.tsx';
-import Waiting from './pages/Waiting.tsx';
 import QuestionSelector from "./pages/QuestionSelector.tsx";
 
 const router = createBrowserRouter([
-  {
-      path: "/",
+    {
+        path: "/",
       element: <Start/>
-  },
-  {
-      path: "/about",
-      element: <About/>
-  },
-  {
-      path: "/question",
-      element: <QuestionSelector />,
-  },
-  {
-    path:"/game/:id",
-    element: <Game/>
-  },
-  {
-    path: "/waiting",
-    element: <Waiting/>
-  }
+    },
+    {
+        path: "/user",
+        element: <Profile/>
+    },
+    {
+        path:"/game/:id",
+        element: <Game/>
+    },
+    {
+        path: "/start/error",
+        element: <Start state={"error"}/>,
+    },
+    {
+        path: "/question",
+        element: <QuestionSelector />,
+    },
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
@@ -37,6 +37,3 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
         <RouterProvider router={router} />
     </React.StrictMode>
 );
-
-const url = import.meta.env.VITE_BACKEND_URL;
-export default url;
