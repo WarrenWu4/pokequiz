@@ -1,8 +1,10 @@
-import { GoogleAuthProvider, onAuthStateChanged, signInWithRedirect } from "firebase/auth";
+import { GoogleAuthProvider, onAuthStateChanged, signInWithPopup } from "firebase/auth";
 import { useEffect, useState } from "react";
-import { auth } from "../firebase";
+import { auth, db } from "../firebase";
 import { Link } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
+import User from "../types";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 
 const Navbar = () => {
 
@@ -14,7 +16,25 @@ const Navbar = () => {
 
     const googleLogin = async () => {
         const provider = new GoogleAuthProvider();
-        await signInWithRedirect(auth, provider)
+        // sign user in with google
+        const result = await signInWithPopup(auth, provider)
+        
+        // if already in database, do nothing
+        const userRef = doc(db, "users", result.user.uid);
+        const docSnap = await getDoc(userRef);
+        if (docSnap.exists()) {
+            return;
+        }
+
+        // if not already in database, add user to database
+        const currUser:User = {
+            uid: result.user.uid,
+            username: (result.user.displayName) ? result.user.displayName : "",
+            email: (result.user.email) ? result.user.email : "",
+            quizIds: [],
+        }
+        await setDoc(userRef, currUser)
+
     }
 
     useEffect(() => {
