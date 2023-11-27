@@ -52,7 +52,7 @@ const ControlPanel = ({state, setControlState, setGraphicsState, questionId, use
 
                 <div className="w-full h-1/2 flex justify-center gap-x-8">
                     <button type="button" onClick={() => setControlState("run")} className="relative">
-                        <h1 className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">run</h1>
+                        <h1 className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">board</h1>
                         <img src="/cards/mon.svg" />
                     </button>
                     <button onClick={() => setControlState("bag")} className="relative" type="button">
@@ -125,18 +125,18 @@ const ControlPanel = ({state, setControlState, setGraphicsState, questionId, use
         if (!question) 
             return
 
-        // in correct set graphics state to "correct",  adjust pokemon hp, update database,
+        // in correct set graphics state to "correct",  adjust pokemon hp, update database, move to next question
         if (move === question.answer) {
             setGraphicsState("correct")
-            setUserBattleData({...userBattleData, pokemonHP: [userBattleData.pokemonHP[0], userBattleData.pokemonHP[1]*(userBattleData.currQuestionNum/quizLength)]})
-            const temp = {...userBattleData, pokemonHP: [userBattleData.pokemonHP[0], userBattleData.pokemonHP[1]*(userBattleData.currQuestionNum/quizLength)]}
+            setUserBattleData({...userBattleData, pokemonHP: [userBattleData.pokemonHP[0], userBattleData.pokemonHP[1]*(userBattleData.currQuestionNum/quizLength)], score: userBattleData.score+1})
+            const temp = {...userBattleData, pokemonHP: [userBattleData.pokemonHP[0], userBattleData.pokemonHP[1]*(userBattleData.currQuestionNum/quizLength)], currQuestionNum: userBattleData.currQuestionNum+1, score: userBattleData.score+1}
             await setDoc(doc(db, `quizzes/${quizId}/players`, uid), temp)
         }
-        // else incorrect set graphics state to "incorrect", adjust pokemon hp, update database
+        // else incorrect set graphics state to "incorrect", adjust pokemon hp, update database, move to next question
         else {
             setGraphicsState("incorrect")
             setUserBattleData({...userBattleData, pokemonHP: [userBattleData.pokemonHP[0]*(1 - userBattleData.currQuestionNum/quizLength), userBattleData.pokemonHP[1]]})
-            const temp = {...userBattleData, pokemonHP: [userBattleData.pokemonHP[0]*(1 -userBattleData.currQuestionNum/quizLength), userBattleData.pokemonHP[1]]}
+            const temp = {...userBattleData, pokemonHP: [userBattleData.pokemonHP[0]*(1 -userBattleData.currQuestionNum/quizLength), userBattleData.pokemonHP[1]], currQuestionNum: userBattleData.currQuestionNum+1}
             await setDoc(doc(db, `quizzes/${quizId}/players`, uid), temp)
         }
 

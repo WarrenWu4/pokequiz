@@ -48,6 +48,24 @@ const GraphicsPanel = ({state, pokemon, questionId, pokemonHP}: GraphicsPanel) =
             <div className="w-full h-8 bg-[url('/tile002.png')] bg-repeat-x">
             </div>
 
+            {(state === "correct") ?
+            <div className="absolute p-2 w-full h-full flex items-center justify-center opacity-90">
+                <div className="bg-[#130E01] w-full h-full text-white font-bold text-2xl rounded-md flex justify-center items-center p-4">
+                Yay! You got it right! The correct answer is indeed: {question?.answer}<br/>
+                click 'W' to continue!
+                </div>
+            </div>
+            :""}
+
+            {(state === "incorrect") ?
+           <div className="absolute p-2 w-full h-full flex items-center justify-center opacity-90">
+                <div className="bg-[#130E01] w-full h-full text-white font-bold text-2xl rounded-md flex justify-center items-center p-4">
+                    Uh oh, you got it wrong. The correct answer was: {question?.answer}<br/>
+                    click 'W' to continue ~~
+                </div>
+            </div>
+            :""}
+
             {(state === "question") ? 
             <div className="absolute p-2 w-full h-full flex items-center justify-center opacity-90">
                 <div className="bg-[#130E01] w-full h-full text-white font-bold text-2xl rounded-md flex justify-center items-center p-4">

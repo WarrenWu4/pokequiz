@@ -8,6 +8,7 @@ import Start from './pages/Start.tsx';
 import Profile from "./pages/Profile.tsx";
 import Game from './pages/Game.tsx';
 import QuestionSelector from "./pages/QuestionSelector.tsx";
+import GameOver from "./pages/GameOver.tsx";
 
 const router = createBrowserRouter([
     {
@@ -25,6 +26,10 @@ const router = createBrowserRouter([
     {
         path: "/start/error",
         element: <Start state={"error"}/>,
+    },
+    {
+        path: "/gameover",
+        element: <GameOver/>
     },
     {
         path: "/question",

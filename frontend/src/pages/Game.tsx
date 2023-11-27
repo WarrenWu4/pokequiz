@@ -2,11 +2,14 @@ import { useEffect, useState } from "react"
 import { Quiz, UserBattleData } from "../types";
 import { useNavigate, useParams } from "react-router";
 import { auth, db } from "../firebase";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 import GraphicsPanel from "../components/GraphicsPanel";
 import ControlPanel from "../components/ControlPanel"
 import Loading from "../components/Loading";
 
+// todo: add game over
+// todo: fix mon graphics
+// todo: add event listener for keypress
 
 const Game = () => {
 
@@ -41,6 +44,27 @@ const Game = () => {
 
     useEffect(() => {
 
+        const resetPlayerData = async() => {
+            if (id && uid) {
+            const temp = {
+                uid: (uid) ? uid : "anonymous"+Math.floor(Math.random()*1000000),
+                pokemonHP: [100, 100],
+                items: ["potion"],
+                currQuestionNum: 0,
+                score: 0,
+            }
+            await setDoc(doc(db, `quizzes/${id}/players`, uid), temp)
+        }}
+
+        if (userBattleData.currQuestionNum === quizData?.questionIds.length) {
+            resetPlayerData()
+            nav(`/gameover/${userBattleData.score}`)
+        }
+
+    }, [userBattleData])
+
+    useEffect(() => {
+
         // get quiz data
         const getQuizData = async() => {
 
@@ -71,9 +95,22 @@ const Game = () => {
             }
         }
 
+        const handleKeyDown = (e:any) => {
+            const key = e.key;
+            if (key === "w") {
+                setGraphicsState("question")
+                setControlState("menu")
+                setUserBattleData({...userBattleData, currQuestionNum: userBattleData.currQuestionNum+1})
+            }
+        }
+        document.addEventListener("keydown", handleKeyDown)
+
         getQuizData()
         getBattleData()
 
+        return () => {
+            document.removeEventListener("keydown", handleKeyDown)
+        }
     }, [])
 
     return ((quizData && id && uid) ?
@@ -86,6 +123,22 @@ const Game = () => {
                 pokemonHP={userBattleData.pokemonHP}
             />
 
+            {/* disable control panel if not question */}
+            {(graphicsState !== "question") ?
+            <div className="w-full h-full bg-black opacity-80">
+                <ControlPanel
+                    state={controlState}
+                    setControlState={setControlState}
+                    setGraphicsState={setGraphicsState}
+                    questionId={quizData.questionIds[userBattleData.currQuestionNum]}
+                    userBattleData={userBattleData}
+                    setUserBattleData={setUserBattleData}
+                    quizLength={quizData.questionIds.length}
+                    quizId={id}
+                    uid={uid}
+                />
+            </div>
+            :
             <ControlPanel
                 state={controlState}
                 setControlState={setControlState}
@@ -97,6 +150,7 @@ const Game = () => {
                 quizId={id}
                 uid={uid}
             />
+            }
 
         </div>
         :
