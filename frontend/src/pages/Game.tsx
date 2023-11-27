@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
-import { Quiz } from "../types";
+import { Quiz, UserBattleData } from "../types";
 import { useNavigate, useParams } from "react-router";
-import { db } from "../firebase";
+import { auth, db } from "../firebase";
 import { doc, getDoc } from "firebase/firestore";
 import GraphicsPanel from "../components/GraphicsPanel";
 import ControlPanel from "../components/ControlPanel"
@@ -11,16 +11,33 @@ import Loading from "../components/Loading";
 const Game = () => {
 
     const [quizData, setQuizData] = useState<Quiz>()
+    const { id } = useParams<{ id: string }>()
+    const uid = auth.currentUser?.uid
+    const nav = useNavigate()
 
     /**
-     * ~ start: play starting animation
      * ~ question: show question
-     * ~ answer: show correct answer & play animation 
+     * ~ correct: show correct answer & reduce hp
+     * ~ incorrect: show correct answer & reduce hp 
      */
-    const [turn, setTurn] = useState<string>("start")
-    const [questionNum, setQuestionNum] = useState<number>(0)
-    const { id } = useParams<{ id: string }>()
-    const nav = useNavigate()
+    const [graphicsState, setGraphicsState] = useState<string>("question")
+
+    /**
+     * ~ menu: default state to show all btns
+     * ~ fight: show answer choices
+     * ~ bag: show items
+     * ~ pokemon: show leaderboard modal
+     * ~ run: confirm quit then redirect to start page
+     */
+    const [controlState, setControlState] = useState<string>("menu")
+
+    const [userBattleData, setUserBattleData] = useState<UserBattleData>({
+        uid: (uid) ? uid : "anonymous"+Math.floor(Math.random()*1000000),
+        pokemonHP: [100, 100],
+        items: ["potion"],
+        currQuestionNum: 0,
+        score: 0,
+    })
 
     useEffect(() => {
 
@@ -44,16 +61,39 @@ const Game = () => {
             }
         }
 
+        const getBattleData = async() => {
+            if (uid) {
+                const userBattleRef = doc(db, `quizzes/${id}/players`, uid);
+                const docSnap = await getDoc(userBattleRef);
+                if (docSnap.exists()) {
+                    setUserBattleData(docSnap.data() as UserBattleData)
+                }
+            }
+        }
+
         getQuizData()
+        getBattleData()
 
     }, [])
 
     return ((quizData) ?
         <div className="w-screen h-screen overflow-x-hidden bg-[#5A6988] bg-center bg-no-repeat bg-cover">
 
-            <GraphicsPanel state={turn} pokemon="https://img.pokemondb.net/sprites/black-white/anim/normal/charizard.gif" question={quizData.questionIds[questionNum]}/>
+            <GraphicsPanel 
+                state={graphicsState} 
+                pokemon="https://img.pokemondb.net/sprites/black-white/anim/normal/charizard.gif" 
+                questionId={quizData.questionIds[userBattleData.currQuestionNum]} 
+                pokemonHP={userBattleData.pokemonHP}
+            />
 
-            <ControlPanel/>
+            <ControlPanel
+                state={controlState}
+                setControlState={setControlState}
+                setGraphicsState={setGraphicsState}
+                questionId={quizData.questionIds[userBattleData.currQuestionNum]}
+                userBattleData={userBattleData}
+                setUserBattleData={setUserBattleData}
+            />
 
         </div>
         :

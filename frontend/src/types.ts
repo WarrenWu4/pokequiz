@@ -15,5 +15,13 @@ export interface Quiz {
 export interface Question {
     question: string;
     options: string[];
-    answer: number;
+    answer: string;
+}
+
+export interface UserBattleData {
+    uid: string;
+    pokemonHP: number[];
+    items: string[];
+    currQuestionNum: number;
+    score: number;
 }
