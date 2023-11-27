@@ -76,7 +76,7 @@ const Game = () => {
 
     }, [])
 
-    return ((quizData) ?
+    return ((quizData && id && uid) ?
         <div className="w-screen h-screen overflow-x-hidden bg-[#5A6988] bg-center bg-no-repeat bg-cover">
 
             <GraphicsPanel 
@@ -93,6 +93,9 @@ const Game = () => {
                 questionId={quizData.questionIds[userBattleData.currQuestionNum]}
                 userBattleData={userBattleData}
                 setUserBattleData={setUserBattleData}
+                quizLength={quizData.questionIds.length}
+                quizId={id}
+                uid={uid}
             />
 
         </div>
