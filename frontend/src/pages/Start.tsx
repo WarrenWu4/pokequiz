@@ -17,7 +17,7 @@ const Start = (props:{ state?:string }) => {
 
 
     return (
-    <div className="w-screen h-screen overflow-x-hidden bg-[url('bg-image.svg')] bg-center bg-no-repeat bg-cover">
+    <div className="w-screen h-screen overflow-x-hidden bg-[url('/bg-image.svg')] bg-center bg-no-repeat bg-cover">
     
         <div className="w-full h-full backdrop-blur-sm bg-black/80 flex flex-col items-center">
 
