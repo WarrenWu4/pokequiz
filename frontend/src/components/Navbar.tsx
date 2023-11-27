@@ -14,8 +14,7 @@ const Navbar = () => {
 
     const googleLogin = async () => {
         const provider = new GoogleAuthProvider();
-        const result = await signInWithRedirect(auth, provider)
-        console.log(result)
+        await signInWithRedirect(auth, provider)
     }
 
     useEffect(() => {
