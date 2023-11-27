@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react"
-import url from "../main";
 import Navbar from "../components/Navbar";
 
 const Game = () => {
@@ -13,7 +12,7 @@ const Game = () => {
         const getData = async() => {
             if (subscribed) {
                 console.log("fetching data in Start.tsx ...")
-                const response = await fetch(url+"/");
+                const response = await fetch("/");
                 const json = await response.json();
                 setData(json.data);
             }
@@ -41,7 +40,7 @@ const Game = () => {
             <Navbar/>
             <div className="w-full h-full flex items-center justify-center flex-col p-4 backdrop-blur-sm">
                 
-                <form onSubmit={handleForm} method="POST" action={url+"/validate"} className="max-w-[320px] max-h-[400px] bg-gray-800 rounded-lg flex items-center justify-center flex-col p-4 md:blur-none">
+                <form onSubmit={handleForm} method="POST" action={"/validate"} className="max-w-[320px] max-h-[400px] bg-gray-800 rounded-lg flex items-center justify-center flex-col p-4 md:blur-none">
                     <label className="mb-2">Enter Game Pin:</label>
                     <input className="bg-transparent px-2 py-1 text-center" type="text" value={pin} onChange={handleInput}/>
                 </form>

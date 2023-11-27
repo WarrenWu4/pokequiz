@@ -1,53 +1,18 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router";
-import url from "../main";
+import { useState } from "react";
 import Navbar from "../components/Navbar";
-import { socket } from "../utils/socket";
 
 const Start = () => {
-    const [data, setData] = useState<string>("");
-    const [pin, setPin] = useState<string>("");
-    const navigate = useNavigate();
 
-    useEffect(() => {
-        let subscribed = true;
-
-        const getData = async () => {
-            if (subscribed) {
-                console.log("fetching data in Start.tsx ...");
-                const response = await fetch(url + "/");
-                const json = await response.json();
-                setData(json.data);
-            }
-        }
-
-        socket.onmessage = (e) => {
-            console.log(e.data);
-        }
-
-        socket.onopen = () => {
-            setInterval(() => {
-                socket.send(JSON.stringify({type: "ping"}));
-            })
-        }
-
-        
-        getData();
-        console.log(data);
-        return () => {
-            subscribed = false;
-        };
-    }, []);
+    const [pin, setPin] = useState("");
 
     const handleForm = () => {
-        navigate("/game/" + pin);
-    };
+        
+    }
 
-    const handleInput = (e: any) => {
-        if (e.target.value.length <= 12) {
-            setPin(e.target.value);
-        }
-    };
+    const handleInput = (e:any) => {
+        setPin(e.target.value)
+    }
+
 
     return (
     <div className="w-screen h-screen overflow-x-hidden bg-[url('bg-image.svg')] bg-center bg-no-repeat bg-cover">
@@ -66,7 +31,7 @@ const Start = () => {
 
                     <div className="absolute top-[20px] flex flex-col items-center justify-center">
                         <img src="/tree.png"/>
-                        <form onSubmit={handleForm} method="POST" action={url + "/validate"} className="flex flex-col gap-y-[10px] items-center mt-[12px]">
+                        <form onSubmit={handleForm} method="POST" action={"/validate"} className="flex flex-col gap-y-[10px] items-center mt-[12px]">
                             <label className="font-bold text-[32px]">Enter Game Pin</label>
                             <input type="text" className="outline-none px-2 w-[244px] h-[42px] bg-transparent border-4 border-[#FAF8ED] border-solid rounded-md font-semibold" value={pin} onChange={handleInput}/>
                         </form>
@@ -74,8 +39,6 @@ const Start = () => {
                 </div>
 
             </div>
-
-
 
         </div>
 
