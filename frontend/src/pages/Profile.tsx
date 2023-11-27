@@ -34,7 +34,7 @@ const Profile = () => {
             <Navbar/>
 
             {userData ? 
-            <div className="w-full h-full flex flex-col px-12">
+            <div className=" mt-8 w-full h-full flex flex-col px-4">
                 <h1>{userData.username}</h1>
             </div>
             :
