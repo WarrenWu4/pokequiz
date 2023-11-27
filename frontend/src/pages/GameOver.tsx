@@ -7,7 +7,6 @@ const GameOver = () => {
     const { score } = useParams<{ score: string }>();
     const { quizId } = useParams<{ quizId: string }>();
 
-    console.log(quizId)
 
     return (
         <div className="w-screen h-screen overflow-x-hidden bg-[url('/bg-image.svg')] bg-center bg-no-repeat bg-cover">

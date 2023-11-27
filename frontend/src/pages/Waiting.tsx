@@ -7,10 +7,9 @@ const Waiting = () => {
 
     useEffect(() => {
         let subscribed = true;
-
+        console.log(data)
         const getData = async() => {
             if (subscribed) {
-                console.log("fetching data in Start.tsx ...")
                 const response = await fetch("/");
                 const json = await response.json();
                 setData(json.data);
@@ -18,7 +17,6 @@ const Waiting = () => {
         }
         
         getData();
-        console.log(data)
         return () => {
             subscribed = false;
         }

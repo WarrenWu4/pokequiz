@@ -20,7 +20,6 @@ export default function QuestionSelector() {
     const [modalIndex, setModalIndex] = useState(0);
 
     const handleDeleteQuestion = (index: number) => {
-        console.log(index);
         setQuestions(questions.filter((_, i) => i !== index));
     };
 

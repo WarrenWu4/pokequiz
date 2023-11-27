@@ -40,7 +40,6 @@ const ControlPanel = ({state, setControlState, setGraphicsState, questionId, use
         }
 
         getQuestionData()
-        console.log(state)
         if (state === "menu") {
             setLayout(
                 <>

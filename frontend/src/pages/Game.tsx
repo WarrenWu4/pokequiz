@@ -8,7 +8,6 @@ import ControlPanel from "../components/ControlPanel"
 import Loading from "../components/Loading";
 
 // todo: fix mon graphics
-// todo: implement run
 
 const Game = () => {
 
@@ -42,7 +41,6 @@ const Game = () => {
     })
 
     useEffect(() => {
-        console.log("Graphics State Changed")
         const resetPlayerData = async() => {
             if (id && uid) {
             const temp = {
@@ -56,7 +54,6 @@ const Game = () => {
         }}
 
         const handleKeyDown = (e:any) => {
-            console.log(graphicsState)
             if (graphicsState === "question") return;
             const key = e.key;
             if (key === "w") {
