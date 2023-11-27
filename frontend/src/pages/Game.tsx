@@ -1,51 +1,63 @@
 import { useEffect, useState } from "react"
-import Navbar from "../components/Navbar";
+import { Quiz } from "../types";
+import { useNavigate, useParams } from "react-router";
+import { db } from "../firebase";
+import { doc, getDoc } from "firebase/firestore";
+import GraphicsPanel from "../components/GraphicsPanel";
+import ControlPanel from "../components/ControlPanel"
+import Loading from "../components/Loading";
+
 
 const Game = () => {
 
-    const [data, setData] = useState<string>()
-    const [pin, setPin] = useState<string>("0000");
+    const [quizData, setQuizData] = useState<Quiz>()
+
+    /**
+     * ~ start: play starting animation
+     * ~ question: show question
+     * ~ answer: show correct answer & play animation 
+     */
+    const [turn, setTurn] = useState<string>("start")
+    const [questionNum, setQuestionNum] = useState<number>(0)
+    const { id } = useParams<{ id: string }>()
+    const nav = useNavigate()
 
     useEffect(() => {
-        let subscribed = true;
 
-        const getData = async() => {
-            if (subscribed) {
-                console.log("fetching data in Start.tsx ...")
-                const response = await fetch("/");
-                const json = await response.json();
-                setData(json.data);
+        // get quiz data
+        const getQuizData = async() => {
+
+            // double check id exists
+            if (!id) {
+                nav("/start/error")
+            } else {
+                // get game id from url
+                const quizRef = doc(db, "quizzes", id);
+                const docSnap = await getDoc(quizRef);
+                // if game id is invalid, redirect to start page with error message
+                // otherwise, fetch quiz data from backend
+                if (docSnap.exists()) {
+                    setQuizData(docSnap.data() as Quiz)
+                } else {
+                    nav("/start/error")
+                }
             }
         }
-        
-        getData();
-        console.log(data)
-        return () => {
-            subscribed = false;
-        }
+
+        getQuizData()
+
     }, [])
 
-    const handleForm = () => {
-        console.log("submitting form...")
-    }
+    return ((quizData) ?
+        <div className="w-screen h-screen overflow-x-hidden bg-[#5A6988] bg-center bg-no-repeat bg-cover">
 
-    const handleInput = (e:any) => {
-        if (e.target.value.length <= 4) {
-            setPin(e.target.value)
-        }
-    }
+            <GraphicsPanel state={turn} pokemon="https://img.pokemondb.net/sprites/black-white/anim/normal/charizard.gif" question={quizData.questionIds[questionNum]}/>
 
-    return (
-            <div className="w-screen h-screen flex flex-col bg-cover bg-[url('/shiny_gyrados.png')] ">
-            <Navbar/>
-            <div className="w-full h-full flex items-center justify-center flex-col p-4 backdrop-blur-sm">
-                
-                <form onSubmit={handleForm} method="POST" action={"/validate"} className="max-w-[320px] max-h-[400px] bg-gray-800 rounded-lg flex items-center justify-center flex-col p-4 md:blur-none">
-                    <label className="mb-2">Enter Game Pin:</label>
-                    <input className="bg-transparent px-2 py-1 text-center" type="text" value={pin} onChange={handleInput}/>
-                </form>
-            </div>
+            <ControlPanel/>
+
         </div>
+        :
+        <Loading/>
     )
 }
 

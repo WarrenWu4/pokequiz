@@ -1,12 +1,14 @@
 import { useState } from "react";
 import Navbar from "../components/Navbar";
+import { useNavigate } from "react-router";
 
-const Start = () => {
+const Start = (props:{ state?:string }) => {
 
     const [pin, setPin] = useState("");
+    const nav = useNavigate()
 
     const handleForm = () => {
-        
+        nav("/game/" + pin)
     }
 
     const handleInput = (e:any) => {
@@ -31,9 +33,10 @@ const Start = () => {
 
                     <div className="absolute top-[20px] flex flex-col items-center justify-center">
                         <img src="/tree.png"/>
-                        <form onSubmit={handleForm} method="POST" action={"/validate"} className="flex flex-col gap-y-[10px] items-center mt-[12px]">
+                        <form onSubmit={handleForm} className="flex flex-col gap-y-[10px] items-center mt-[12px]">
                             <label className="font-bold text-[32px]">Enter Game Pin</label>
-                            <input type="text" className="outline-none px-2 w-[244px] h-[42px] bg-transparent border-4 border-[#FAF8ED] border-solid rounded-md font-semibold" value={pin} onChange={handleInput}/>
+                            <input type="text" className="outline-none px-2 w-[244px] h-[42px] bg-transparent border-4 border-[#FAF8ED] border-solid rounded-md font-semibold text-center" value={pin} onChange={handleInput}/>
+                            {(props.state === "error") ? <label className="text-red-500">invalid game pin</label> : ""}
                         </form>
                     </div>
                 </div>

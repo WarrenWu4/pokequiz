@@ -7,7 +7,6 @@ import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import Start from './pages/Start.tsx';
 import Profile from "./pages/Profile.tsx";
 import Game from './pages/Game.tsx';
-import Waiting from './pages/Waiting.tsx';
 import QuestionSelector from "./pages/QuestionSelector.tsx";
 
 const router = createBrowserRouter([
@@ -20,17 +19,17 @@ const router = createBrowserRouter([
         element: <Profile/>
     },
     {
-        path: "/question",
-        element: <QuestionSelector />,
-    },
-    {
         path:"/game/:id",
         element: <Game/>
     },
     {
-        path: "/waiting",
-        element: <Waiting/>
-    }
+        path: "/start/error",
+        element: <Start state={"error"}/>,
+    },
+    {
+        path: "/question",
+        element: <QuestionSelector />,
+    },
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
