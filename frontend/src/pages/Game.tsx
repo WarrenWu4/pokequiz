@@ -42,7 +42,6 @@ const Game = () => {
     })
 
     useEffect(() => {
-        console.log("Graphics State Changed")
         const resetPlayerData = async() => {
             if (id && uid) {
             const temp = {
@@ -56,7 +55,6 @@ const Game = () => {
         }}
 
         const handleKeyDown = (e:any) => {
-            console.log(graphicsState)
             if (graphicsState === "question") return;
             const key = e.key;
             if (key === "w") {
@@ -136,7 +134,7 @@ const Game = () => {
     }, [])
 
     return ((quizData && id && uid) ?
-        <div className="w-screen h-screen overflow-x-hidden bg-[#5A6988] bg-center bg-no-repeat bg-cover">
+        <div className="w-screen h-screen overflow-x-hidden bg-[#5A6988] bg-center bg-no-repeat bg-cover relative">
 
             <GraphicsPanel 
                 state={graphicsState} 

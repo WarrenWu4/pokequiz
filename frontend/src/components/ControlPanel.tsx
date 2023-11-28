@@ -3,6 +3,7 @@ import { Question, UserBattleData } from "../types";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { db } from "../firebase";
 import Leaderboard from "./Leaderboard";
+import { Link } from "react-router-dom";
 
 interface ControlPanelProps {
     state: string;
@@ -43,7 +44,6 @@ const ControlPanel = ({state, setControlState, setGraphicsState, questionId, use
 
         getQuestionData()
         getLeaderboardData()
-
         if (state === "menu") {
             setLayout(
                 <>
@@ -55,7 +55,7 @@ const ControlPanel = ({state, setControlState, setGraphicsState, questionId, use
                 </div>
 
                 <div className="w-full h-1/2 flex justify-center gap-x-8">
-                    <button type="button" onClick={() => setControlState("board")} className="relative">
+                    <button type="button" className="relative">
                         <h1 className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">board</h1>
                         <img src="/cards/mon.svg" />
                     </button>
@@ -119,7 +119,27 @@ const ControlPanel = ({state, setControlState, setGraphicsState, questionId, use
                     </div>
                 </div>
             )
-        } else if(state === "board") {
+        }
+        else if (state === "run") {
+            setLayout(
+            <div className="w-full h-full p-4 bg-black flex flex-col justify-center items-center gap-y-4">
+                
+                <h1 className="font-bold text-xl">Are you sure you want to run?</h1>
+
+                <div className="flex justify-center items-center gap-x-4">
+                    <Link to={"/"} className="relative" type="button">
+                        <h1 className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">Yes</h1>
+                        <img src="/cards/mon.svg"/>
+                    </Link>
+                    <button onClick={() => setControlState("menu")} className="relative" type="button">
+                        <h1 className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">No</h1>
+                        <img src="/cards/mon.svg"/>
+                    </button>
+                </div>
+
+            </div>)
+        }
+        else if(state === "board") {
             setLayout(
                 <Leaderboard players={leaderBoardData} total={quizLength} closeLeaderboard={()=> setControlState("menu")}/>
             )
