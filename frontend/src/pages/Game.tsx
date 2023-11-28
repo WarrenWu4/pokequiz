@@ -133,7 +133,7 @@ const Game = () => {
         getBattleData()
     }, [])
 
-    return ((quizData && id && uid) ?
+    return ((quizData && id) ?
         <div className="w-screen h-screen overflow-x-hidden bg-[#5A6988] bg-center bg-no-repeat bg-cover relative">
 
             <GraphicsPanel 

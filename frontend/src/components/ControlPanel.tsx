@@ -14,7 +14,7 @@ interface ControlPanelProps {
     setUserBattleData: Function;
     quizLength: number;
     quizId: string;
-    uid: string;
+    uid?: string;
     getLeaderboardData: Function;
     leaderBoardData: UserBattleData[];
 }
@@ -55,7 +55,7 @@ const ControlPanel = ({state, setControlState, setGraphicsState, questionId, use
                 </div>
 
                 <div className="w-full h-1/2 flex justify-center gap-x-8">
-                    <button type="button" className="relative">
+                    <button onClick={() => setControlState("board")} type="button" className="relative">
                         <h1 className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">board</h1>
                         <img src="/cards/mon.svg" />
                     </button>
@@ -150,7 +150,7 @@ const ControlPanel = ({state, setControlState, setGraphicsState, questionId, use
     const handleFight = async (move: string) => {
 
         // double check question exists
-        if (!question) 
+        if (!question || !uid) 
             return
 
         // in correct set graphics state to "correct",  adjust pokemon hp, update database, move to next question
@@ -171,6 +171,7 @@ const ControlPanel = ({state, setControlState, setGraphicsState, questionId, use
     }
 
     const useItem = async (item:string) => {
+        if (!uid) return
         // see which item it is
         // if it's a potion, heal pokemon hp & remove from items
         if (item.toLowerCase() === 'potion') {
