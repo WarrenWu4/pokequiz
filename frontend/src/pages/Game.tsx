@@ -16,6 +16,7 @@ const Game = () => {
     const uid = auth.currentUser?.uid
     const nav = useNavigate()
 
+    const [leaderboardData, setLeaderboardData] = useState<UserBattleData[]>([])
     /**
      * ~ question: show question
      * ~ correct: show correct answer & reduce hp
@@ -83,6 +84,17 @@ const Game = () => {
 
     }, [graphicsState])
 
+    const getLeaderBoardData = async() => {
+        if(id) {
+            const leaderBoardRef = doc(db, `quizzes/${id}/players`);
+            const docSnap = await getDoc(leaderBoardRef);
+            if (docSnap.exists()) {
+                setLeaderboardData(docSnap.data() as UserBattleData[])
+                console.log(docSnap.data())
+            }
+        }
+    }
+
     useEffect(() => {
 
         // get quiz data
@@ -115,9 +127,10 @@ const Game = () => {
             }
         }
 
+        
+
         getQuizData()
         getBattleData()
-
     }, [])
 
     return ((quizData && id && uid) ?
@@ -143,6 +156,8 @@ const Game = () => {
                     quizLength={quizData.questionIds.length}
                     quizId={id}
                     uid={uid}
+                    getLeaderboardData={getLeaderBoardData}
+                    leaderBoardData={leaderboardData}
                 />
             </div>
             :
@@ -156,6 +171,8 @@ const Game = () => {
                 quizLength={quizData.questionIds.length}
                 quizId={id}
                 uid={uid}
+                getLeaderboardData={getLeaderBoardData}
+                leaderBoardData={leaderboardData}
             />
             }
 

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Question, UserBattleData } from "../types";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { db } from "../firebase";
+import Leaderboard from "./Leaderboard";
 import { Link } from "react-router-dom";
 
 interface ControlPanelProps {
@@ -14,9 +15,11 @@ interface ControlPanelProps {
     quizLength: number;
     quizId: string;
     uid: string;
+    getLeaderboardData: Function;
+    leaderBoardData: UserBattleData[];
 }
 
-const ControlPanel = ({state, setControlState, setGraphicsState, questionId, userBattleData, setUserBattleData, quizLength, quizId, uid}: ControlPanelProps) => {
+const ControlPanel = ({state, setControlState, setGraphicsState, questionId, userBattleData, setUserBattleData, quizLength, quizId, uid, leaderBoardData, getLeaderboardData}: ControlPanelProps) => {
 
     const [question, setQuestion] = useState<Question>()
     const [layout, setLayout] = useState<JSX.Element>()
@@ -40,6 +43,7 @@ const ControlPanel = ({state, setControlState, setGraphicsState, questionId, use
         }
 
         getQuestionData()
+        getLeaderboardData()
         if (state === "menu") {
             setLayout(
                 <>
@@ -134,6 +138,11 @@ const ControlPanel = ({state, setControlState, setGraphicsState, questionId, use
                 </div>
 
             </div>)
+        }
+        else if(state === "board") {
+            setLayout(
+                <Leaderboard players={leaderBoardData} total={quizLength} closeLeaderboard={()=> setControlState("menu")}/>
+            )
         }
 
     }, [state])
