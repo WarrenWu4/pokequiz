@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Question, UserBattleData } from "../types";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { db } from "../firebase";
+import Leaderboard from "./Leaderboard";
 
 interface ControlPanelProps {
     state: string;
@@ -13,9 +14,11 @@ interface ControlPanelProps {
     quizLength: number;
     quizId: string;
     uid: string;
+    getLeaderboardData: Function;
+    leaderBoardData: UserBattleData[];
 }
 
-const ControlPanel = ({state, setControlState, setGraphicsState, questionId, userBattleData, setUserBattleData, quizLength, quizId, uid}: ControlPanelProps) => {
+const ControlPanel = ({state, setControlState, setGraphicsState, questionId, userBattleData, setUserBattleData, quizLength, quizId, uid, leaderBoardData, getLeaderboardData}: ControlPanelProps) => {
 
     const [question, setQuestion] = useState<Question>()
     const [layout, setLayout] = useState<JSX.Element>()
@@ -39,6 +42,7 @@ const ControlPanel = ({state, setControlState, setGraphicsState, questionId, use
         }
 
         getQuestionData()
+        getLeaderboardData()
 
         if (state === "menu") {
             setLayout(
@@ -51,7 +55,7 @@ const ControlPanel = ({state, setControlState, setGraphicsState, questionId, use
                 </div>
 
                 <div className="w-full h-1/2 flex justify-center gap-x-8">
-                    <button type="button" onClick={() => setControlState("run")} className="relative">
+                    <button type="button" onClick={() => setControlState("board")} className="relative">
                         <h1 className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">board</h1>
                         <img src="/cards/mon.svg" />
                     </button>
@@ -114,6 +118,10 @@ const ControlPanel = ({state, setControlState, setGraphicsState, questionId, use
                         </div>
                     </div>
                 </div>
+            )
+        } else if(state === "board") {
+            setLayout(
+                <Leaderboard players={leaderBoardData} total={quizLength} closeLeaderboard={()=> setControlState("menu")}/>
             )
         }
 
